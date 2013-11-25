@@ -191,6 +191,9 @@ if (defined('ENVIRONMENT'))
 		define('APPPATH', BASEPATH.$application_folder.'/');
 	}
 
+    // The path to the site root
+    define('SITEPATH', APPPATH);
+
 /*
  * --------------------------------------------------------------------
  * LOAD THE BOOTSTRAP FILE
