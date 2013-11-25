@@ -152,6 +152,10 @@ function &DB($params = '', $active_record_override = NULL)
 	{
 		$DB->query('SET SESSION sql_mode="STRICT_ALL_TABLES"');
 	}
+    else
+    {
+        $DB->query('SET SESSION sql_mode=""');
+    }
 
 	return $DB;
 }
