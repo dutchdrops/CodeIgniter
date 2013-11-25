@@ -225,32 +225,46 @@
  * ------------------------------------------------------
  *
  */
-	// Load the base controller class
-	require BASEPATH.'core/Controller.php';
+    // Load the base controller class
+    require BASEPATH.'core/Controller.php';
 
-	function &get_instance()
-	{
-		return CI_Controller::get_instance();
-	}
+    function &get_instance()
+    {
+        return CI_Controller::get_instance();
+    }
 
+    require APPPATH.'core/'.$CFG->config['subclass_prefix'].'Controller.php';
 
-	if (file_exists(APPPATH.'core/'.$CFG->config['subclass_prefix'].'Controller.php'))
-	{
-		require APPPATH.'core/'.$CFG->config['subclass_prefix'].'Controller.php';
-	}
+    if (file_exists(SITEPATH.'core/'.$CFG->config['subclass_prefix'].'Controller.php'))
+    {
+        require SITEPATH.'core/'.$CFG->config['subclass_prefix'].'Controller.php';
+    }
 
-	// Load the local application controller
-	// Note: The Router class automatically validates the controller path using the router->_validate_request().
-	// If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
-	if ( ! file_exists(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php'))
-	{
-		show_error('Unable to load your default controller. Please make sure the controller specified in your Routes.php file is valid.');
-	}
+    // Load the local application controller
+    // Note: The Router class automatically validates the controller path using the router->_validate_request().
+    // If this include fails it means that the default controller in the Routes.php file is not resolving to something valid.
+    if ( ! file_exists(SITEPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php'))
+    {
+        if ( ! file_exists(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php'))
+        {
+            show_error('Unable to load your default controller. Please make sure the controller specified in your Routes.php file is valid.');
+        }
 
-	include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php');
+        include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php');
+    }
+    else {
+        if (file_exists(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php'))
+        {
+            include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php');
+        }
 
-	// Set a mark point for benchmarking
-	$BM->mark('loading_time:_base_classes_end');
+        include(SITEPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php');
+
+        $NS = $CFG->item('site_namespace');
+    }
+
+    // Set a mark point for benchmarking
+    $BM->mark('loading_time:_base_classes_end');
 
 /*
  * ------------------------------------------------------
@@ -261,7 +275,7 @@
  *  loader class can be called via the URI, nor can
  *  controller functions that begin with an underscore
  */
-	$class  = $RTR->fetch_class();
+    $class  = $NS . '\\'. $RTR->fetch_class();
 	$method = $RTR->fetch_method();
 
 	if ( ! class_exists($class)
