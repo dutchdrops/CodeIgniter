@@ -31,9 +31,7 @@
 class CI_DB_pdo_driver extends CI_DB {
 
 	var $dbdriver = 'pdo';
-
-	// the character used to excape - not necessary for PDO
-	var $_escape_char = '';
+	var $_escape_char = '`';
 	var $_like_escape_str;
 	var $_like_escape_chr;
 	
